@@ -21,6 +21,35 @@ function post_request($action, $data, $url, $username, $password)
 	return $result;
 }
 
+function pika_cms_transfer_v2_submit($data, $url, $username, $password)
+{
+	require_once('JSON.php');
+	$json = new Services_JSON;
+	$c = curl_init();
+	curl_setopt($c, CURLOPT_URL, $url);
+	curl_setopt($c, CURLOPT_TIMEOUT, 60);
+	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+	curl_setopt($c, CURLOPT_USERPWD, "$username:$password");
+	curl_setopt($c, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 2);	
+	$post_string = $json->encode($data);
+	curl_setopt($c,CURLOPT_POST, true);
+	curl_setopt($c,CURLOPT_POSTFIELDS, $post_string);	
+	$result=curl_exec($c);
+	$status_code = curl_getinfo($c, CURLINFO_HTTP_CODE);
+	curl_close ($c);
+	echo $status_code;
+	//if ( $status_code != 201 ) 
+	if ($result != '1')
+	{
+    	die("An error occurred. URL: $url, status: $status_code, curl_error " . curl_error($c) . ", curl_errno " . curl_errno($c));
+	}
+
+	return $result;
+}
+
+
 $a2j_file = new SimpleXMLElement($_POST['AnswerKey']);
 //print_r($a2j_file);
 $case_record = array();
@@ -70,11 +99,10 @@ foreach ($a2j_file->Answer as $val)
 	}
 }
 
-$case_id = post_request('newCase', $case_record, $url, $username, $password);
-$contact_id = post_request('newContact', $contact_record, $url, $username, $password);
-$conflict_id = post_request('addCaseContact', array($case_id, $contact_id, 1), $url, $username, $password);
+$bundle = array('case' => $case_record, 'client' => $contact_record);
+pika_cms_transfer_v2_submit($bundle, $url, $username, $password);
 
-if ($case_id === null || $contact_id === null || $conflict_id === null)
+if (false)
 {
 	echo "<h1>I'm sorry, but a system error has occurred.</h1>";
 }

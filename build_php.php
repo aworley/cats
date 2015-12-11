@@ -12,7 +12,7 @@ class build_php
 		echo "\$username = '';\n";
 		echo "\$password = '';\n";
 		echo "\$lookup = " . var_export($lookup, true) . ";\n";
-		echo "\$url = '" . $_POST['url'] . '/services/transfer_case.php' . "';\n";		
+		echo "\$url = '" . $_POST['url'] . '/services/transfer_case_v2.php' . "';\n";		
 		echo "?>";
 		echo file_get_contents('a2j_submission_handler.php');
 		exit();
