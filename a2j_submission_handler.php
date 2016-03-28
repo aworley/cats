@@ -74,11 +74,34 @@ foreach ($a2j_file->Answer as $val)
 		$usv = (string) $val->DateValue;
 	}
 	
-	else if (isset($val->SelValue->MCValue))
+	else if (isset($val->MCValue->SelValue))
 	{
-		$usv = (string) $val->SelValue->MCValue;
+		$usv = (string) $val->MCValue->SelValue;
 	}
 	
+	else if (isset($val->NumValue))
+	{
+		$usv = (string) $val->NumValue;
+	}
+	
+	else if (isset($val->TFValue))
+	{
+		if ($val->TFValue == 'true')
+		{
+			$usv = '1';
+		}
+		
+		else
+		{
+			$usv = '0';
+		}
+	}
+	
+	else if (isset($val->Text))
+	{
+		$usv = (string) $val->Text;
+	}
+		
 	if (array_key_exists($a2j_field_name, $lookup))
 	{
 		$cms_field_name = $lookup[$a2j_field_name];
