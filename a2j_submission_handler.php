@@ -23,8 +23,8 @@ function post_request($action, $data, $url, $username, $password)
 
 function pika_cms_transfer_v2_submit($data, $url, $username, $password)
 {
-	require_once('JSON.php');
-	$json = new Services_JSON;
+	//require_once('JSON.php');
+	//$json = new Services_JSON;
 	$c = curl_init();
 	curl_setopt($c, CURLOPT_URL, $url);
 	curl_setopt($c, CURLOPT_TIMEOUT, 60);
@@ -33,7 +33,7 @@ function pika_cms_transfer_v2_submit($data, $url, $username, $password)
 	curl_setopt($c, CURLOPT_USERPWD, "$username:$password");
 	curl_setopt($c, CURLOPT_SSL_VERIFYPEER, FALSE);
 	curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 2);	
-	$post_string = $json->encode($data);
+	$post_string = json_encode($data);
 	curl_setopt($c,CURLOPT_POST, true);
 	curl_setopt($c,CURLOPT_POSTFIELDS, $post_string);	
 	$result=curl_exec($c);
