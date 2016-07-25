@@ -41,7 +41,7 @@ function pika_cms_transfer_v2_submit($data, $url, $username, $password)
 	curl_close ($c);
 	echo $status_code;
 	//if ( $status_code != 201 ) 
-	if ($result != '1')
+	if (false && $result != '1')
 	{
     	die("An error occurred. URL: $url, status: $status_code, curl_error " . curl_error($c) . ", curl_errno " . curl_errno($c));
 	}
@@ -54,6 +54,9 @@ $a2j_file = new SimpleXMLElement($_POST['AnswerKey']);
 //print_r($a2j_file);
 $case_record = array();
 $contact_record = array();
+$op_record = array();
+$opa_record = array();
+$notes_record = array();
 
 foreach ($a2j_file->Answer as $val) 
 {			
@@ -120,10 +123,41 @@ foreach ($a2j_file->Answer as $val)
 	{
 		$contact_record[$x[1]] = $usv;
 	}
+	
+	else if ($x[0] == 'op')
+	{
+		$op_record[$x[1]] = $usv;
+	}
+	
+	else if ($x[0] == 'opa')
+	{
+		$opa_record[$x[1]] = $usv;
+	}
+
+	else if ($x[0] == 'notes')
+	{
+		$notes_record[$x[1]] = $usv;
+	}
 }
 
 $bundle = array('case' => $case_record, 'client' => $contact_record);
-pika_cms_transfer_v2_submit($bundle, $url, $username, $password);
+
+if (sizeof($op_record) > 0)
+{
+	$bundle['op'] = $op_record;
+}
+
+if (sizeof($opa_record) > 0)
+{
+	$bundle['opa'] = $opa_record;
+}
+
+if (sizeof($notes_record) > 0)
+{
+	$bundle['notes'] = $notes_record;
+}
+
+$case_id = pika_cms_transfer_v2_submit($bundle, $url, $username, $password);
 
 if (false)
 {

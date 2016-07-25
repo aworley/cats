@@ -247,6 +247,30 @@ class match_fields
 <option>contacts.residence</option>
 <option>contacts.marital</option>
 <option>contacts.frail</option>
+<option label>opposing party</option>
+<option>op.contact_id</option>
+<option>op.first_name</option>
+<option>op.middle_name</option>
+<option>op.last_name</option>
+<option>op.extra_name</option>
+<option>op.birth_date</option>
+<option label>opposing party attorney</option>
+<option>opa.contact_id</option>
+<option>opa.first_name</option>
+<option>opa.middle_name</option>
+<option>opa.last_name</option>
+<option>opa.extra_name</option>
+<option label>case notes</option>
+<option>notes.notes0</option>
+<option>notes.notes1</option>
+<option>notes.notes2</option>
+<option>notes.notes3</option>
+<option>notes.notes4</option>
+<option>notes.notes5</option>
+<option>notes.notes6</option>
+<option>notes.notes7</option>
+<option>notes.notes8</option>
+<option>notes.notes9</option>
 </select>
 		</td></tr>
 ";
