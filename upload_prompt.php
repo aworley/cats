@@ -15,7 +15,7 @@ class upload_prompt
 	<h2>Step 2:  Upload the Interview ZIP File</h2>
   <div class="form-group">
 	<p>Please upload the ZIP file for the interview that you want to publish.</p>
-	<input type="file" name="zip"><br>
+	<input type="file" name="uploads[]" data-multiple-caption="{count} files selected" multiple><br>
 	<p class="help-block">This should be the ZIP file you downloaded from the A2J Author site.</p>
 	</div>
 	<input type="submit" class="btn btn-default btn-lg" value="Click Here to Upload and Continue to Step 3">

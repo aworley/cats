@@ -9,6 +9,9 @@ class build_php
 		
 		header("Content-Type: text/plain");
 		echo "<?php\n";
+		echo "/* This JSON data is used to restore this mapping for fine tuning.\n";
+		echo json_encode($lookup);
+		echo "\n*/\n";
 		echo "\$username = '';\n";
 		echo "\$password = '';\n";
 		echo "\$lookup = " . var_export($lookup, true) . ";\n";

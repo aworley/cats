@@ -4,10 +4,47 @@ class match_fields
 {
 	function run()
 	{
+		$lookup = array();
+		
+		if (!isset($_FILES['uploads']))
+		{
+			// The user bypassed the previous form.
+			die('Steps 1 and 2 were skipped.');
+		}
+		
+		if ($_FILES['uploads']['name'][0] == '')
+		{
+			// The user did not upload any files.
+			die('No files were uploaded.');
+		}
+		
+		if (sizeof($_FILES['uploads']['name']) > 2)
+		{
+			die('Too many files were uploaded.');
+		}
+		
+		for ($i = 0; $i < sizeof($_FILES['uploads']['name']); $i++)
+		{
+			if ($_FILES['uploads']['type'][$i] == 'application/zip')
+			{
+				$zip_path = $_FILES['uploads']['tmp_name'][$i];
+			}
+			
+			else
+			{
+				// This file is hopefully a previously build .php file.  Extract the
+				// JSON lookup table from it, and use that to prepopulate the matching
+				// table to save the user time.
+				$s = file_get_contents($_FILES['uploads']['tmp_name'][$i]);
+				$t = explode("\n", $s);
+				$lookup = json_decode($t[2], 1);
+			}
+		}
+		
 		//TODO:  Check ['zip']['type'], ['error']
 		$zip = new ZipArchive();
 		
-		$zip->open($_FILES['zip']['tmp_name']);
+		$zip->open($zip_path);
 		$xml = $zip->getFromName('Guide.xml');
 		$a2j_file = new SimpleXMLElement($xml);
 		//echo "<pre>=== A2J Answer File export ===\n";
@@ -68,11 +105,14 @@ class match_fields
 		{			
 			//print_r($val);
 			$a = $val->attributes();
+			// Remove spaces from the names of the HTML select elements.  Having
+			// names in them makes the jquery code ugly.
+			$menu_name = str_replace(" ", "_", $a['NAME']);
 			echo "	
-			<tr><td>{$a['NAME']}</td>
+			<tr><td>{$menu_name}</td>
 		<td>
 		</td><td>
-		<select class=\"form-control\" name=\"{$a['NAME']}\" id=\"match{$i}\">
+		<select class=\"form-control\" name=\"{$menu_name}\" id=\"match{$i}\">
 		<option selected></option>
 <option label>cases</option>
 <option>cases.case_id</option>
@@ -321,8 +361,18 @@ $('#add').click(function(event){
 </script>
 		</td></tr>
 ";
-$i++;
+
+		if (array_key_exists($menu_name, $lookup) && strlen($lookup[$menu_name]) > 0)
+		{
+			echo "<script>\n";
+			echo "$('#match" . $i . "').append(\"<option value='{$lookup[$menu_name]}' selected>{$lookup[$menu_name]}</option>\");\n";
+			echo "</script>\n";
 		}
+		
+		$i++;
+		}
+		
+
 
 
 
