@@ -7,7 +7,8 @@ class build_php
 		$lookup = $_POST;
 		unset($lookup['url']);
 		
-		header("Content-Type: text/plain");
+		header("Content-Type: application/octet-stream");
+		header("Content-Disposition: attachment; filename=A2J_ViewerAnswerSet.php");
 		echo "<?php\n";
 		echo "\$username = '';\n";
 		echo "\$password = '';\n";
