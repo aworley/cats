@@ -15,19 +15,44 @@ class match_fields
 		
 		$safe_url = htmlentities($_POST['url']);
 		echo "
-
-		<form class=\"form-inline\">
+		<h2>Step 3:  Add custom fields</h2>
+		<p class=\"help-block\">The data matching menus in Step 4 only include the 
+		standard CMS fields as options.  If your CMS has custom database fields that 
+		will receive data from your A2J interview, use this form to add new options
+		to the data matching menus.</p>
+		<p class=\"help-block\">To enter a new field option, first the name of the 
+		field in the text box.  Then select the table	record where the field appears
+		(Case, Client, Opposing Party, or Opposing Party's Attorney).  Then press 
+		the Add Field button. 
+		Your additions will appear at the very bottom of the menus.
+		You can add as many new options as needed.</p>
+		<form class=\"form-inline\" id=\"data_matching\">
 	  <div class=\"form-group\">
-			<input type=\"text\" id=\"newOptionName\" class=\"form-control\">
+		<label for=\"newOptionName\">Field Name</label>
+		<input type=\"text\" id=\"newOptionName\" class=\"form-control\">
+		<label class=\"radio-inline\">
+		  <input type=\"radio\" name=\"table\" id=\"table0\" value=\"cases\" checked> Case
+		</label>
+		<label class=\"radio-inline\">
+		  <input type=\"radio\" name=\"table\" id=\"table1\" value=\"contacts\"> Client
+		</label>
+		<label class=\"radio-inline\">
+		  <input type=\"radio\" name=\"table\" id=\"table2\" value=\"op\"> Opposing Party
+		</label>
+		<label class=\"radio-inline\">
+		  <input type=\"radio\" name=\"table\" id=\"table3\" value=\"opa\"> Opposing Party's Attorney
+		</label>		
 			</div>
 			<button id=\"add\" class=\"btn btn-default\">Add Field</button>
+			<span style=\"display: none\" id=\"myElem\">Field Added!</span>
 			</form>
+			<h2>Step 4:  Match fields</h2>
 	<form action=\"/cxn/cxn.php/build_php\" method=\"POST\">
   <div class=\"form-group\">
     <label for=\"url\">CMS URL</label>
     <input type=\"text\" class=\"form-control\" id=\"url\" name=\"url\" placeholder=\"CMS URL\" value=\"{$safe_url}\">
   </div>
-  	<h2>Step 3:  Match fields</h2>
+  	
 	<div class=\"form-group\">
 	<p class=\"help-block\">Here is a list of fields entered during the interview.  Match each one up
 		to a field in your CMS database.</p>
@@ -287,8 +312,10 @@ $('#add').click(function(event){
 
 	if(!optionExists)
 	{ */
-		var optionName = $('#newOptionName').val();
+		var optionName = $('input[name=table]:checked', '#data_matching').val() + '.' + $('#newOptionName').val();
 		$('#match" . $i . "').append(\"<option value='\"+optionName+\"'>\"+optionName+\"</option>\");
+		$(\"#myElem\").show();
+		setTimeout(function() { $(\"#myElem\").hide(); }, 5000);
 	/* } */
 });
 </script>
