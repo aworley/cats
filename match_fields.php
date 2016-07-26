@@ -15,6 +15,13 @@ class match_fields
 		
 		$safe_url = htmlentities($_POST['url']);
 		echo "
+
+		<form class=\"form-inline\">
+	  <div class=\"form-group\">
+			<input type=\"text\" id=\"newOptionName\" class=\"form-control\">
+			</div>
+			<button id=\"add\" class=\"btn btn-default\">Add Field</button>
+			</form>
 	<form action=\"/cxn/cxn.php/build_php\" method=\"POST\">
   <div class=\"form-group\">
     <label for=\"url\">CMS URL</label>
@@ -24,14 +31,14 @@ class match_fields
 	<div class=\"form-group\">
 	<p class=\"help-block\">Here is a list of fields entered during the interview.  Match each one up
 		to a field in your CMS database.</p>
-		
+
 	<table class=\"table table-striped\">
 		<thead>
 		<tr><th>Interview Field</th><th>CMS Table</th><th>CMS Field</th></tr>
 		</thead>
 		<tbody>
 ";
-
+		$i = 0;
 		foreach ($a2j_file->VARIABLES->VARIABLE as $val) 
 		{			
 			//print_r($val);
@@ -40,7 +47,7 @@ class match_fields
 			<tr><td>{$a['NAME']}</td>
 		<td>
 		</td><td>
-		<select class=\"form-control\" name=\"{$a['NAME']}\">
+		<select class=\"form-control\" name=\"{$a['NAME']}\" id=\"match{$i}\">
 		<option selected></option>
 <option label>cases</option>
 <option>cases.case_id</option>
@@ -272,8 +279,22 @@ class match_fields
 <option>notes.notes8</option>
 <option>notes.notes9</option>
 </select>
+<script>
+$('#add').click(function(event){
+	event.preventDefault();
+	
+	/* var optionExists = ($('#match" . $i . " option[value=' + $(this).val() + ']').length > 0);
+
+	if(!optionExists)
+	{ */
+		var optionName = $('#newOptionName').val();
+		$('#match" . $i . "').append(\"<option value='\"+optionName+\"'>\"+optionName+\"</option>\");
+	/* } */
+});
+</script>
 		</td></tr>
 ";
+$i++;
 		}
 
 
