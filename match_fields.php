@@ -159,16 +159,23 @@ class match_fields
 		</td><td>
 		<select class=\"form-control\" name=\"{$menu_name}\" id=\"match{$i}\">
 		<option></option>\n";
-echo "<option label>Client Information</option>\n";
+echo "<optgroup label=\"Client Information\">\n";
 echo build_match_options('contacts', $contact_columns, $selected);
-echo "<option label>Case Notes</option>\n";
+echo "</optgroup>\n";
+echo "<optgroup label=\"Case Notes\">\n";
 echo build_match_options('notes', $note_columns, $selected);
-echo "<option label>Case Information</option>\n";
+echo "</optgroup>\n";
+echo "<optgroup label=\"Case Information\">\n";
 echo build_match_options('cases', $case_columns, $selected);
-echo "<option label>Opposing Party</option>\n";
+echo "</optgroup>\n";
+echo "<<optgroup label=\"Opposing Party\">\n";
 echo build_match_options('op', $contact_columns, $selected);
-echo "<option label>Opposing Party Attorney</option>";
+echo "</optgroup>\n";
+echo "<optgroup label=\"Opposing Party Attorney\">\n";
 echo build_match_options('opa', $contact_columns, $selected);
+echo "</optgroup>\n";
+echo "<optgroup label=\"Custom Fields Added in Step 3\">\n";
+echo "</optgroup>\n";
 echo "</select>
 <script>
 $('#add').click(function(event){
