@@ -158,17 +158,17 @@ class match_fields
 		<td>
 		</td><td>
 		<select class=\"form-control\" name=\"{$menu_name}\" id=\"match{$i}\">
-		<option></option>
-<option label>cases</option>\n";
-echo build_match_options('cases', $case_columns, $selected);
-echo "<option label>contacts</option>\n";
+		<option></option>\n";
+echo "<option label>Client Information</option>\n";
 echo build_match_options('contacts', $contact_columns, $selected);
-echo "<option label>opposing party</option>\n";
-echo build_match_options('op', $contact_columns, $selected);
-echo "<option label>opposing party attorney</option>";
-echo build_match_options('opa', $contact_columns, $selected);
-echo "<option label>case notes</option>\n";
+echo "<option label>Case Notes</option>\n";
 echo build_match_options('notes', $note_columns, $selected);
+echo "<option label>Case Information</option>\n";
+echo build_match_options('cases', $case_columns, $selected);
+echo "<option label>Opposing Party</option>\n";
+echo build_match_options('op', $contact_columns, $selected);
+echo "<option label>Opposing Party Attorney</option>";
+echo build_match_options('opa', $contact_columns, $selected);
 echo "</select>
 <script>
 $('#add').click(function(event){
