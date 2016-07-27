@@ -135,7 +135,7 @@ class match_fields
 
 	<table class=\"table table-striped\">
 		<thead>
-		<tr><th>Interview Field</th><th>CMS Table</th><th>CMS Field</th></tr>
+		<tr><th>Interview Field</th><th>CMS Field</th></tr>
 		</thead>
 		<tbody>
 ";
@@ -155,8 +155,7 @@ class match_fields
 			
 			echo "	
 			<tr><td>{$menu_name}</td>
-		<td>
-		</td><td>
+			<td>
 		<select class=\"form-control\" name=\"{$menu_name}\" id=\"match{$i}\">
 		<option></option>\n";
 echo "<optgroup label=\"Client Information\">\n";
