@@ -55,7 +55,7 @@ $a2j_file = new SimpleXMLElement($_POST['AnswerKey']);
 $case_record = array();
 $contact_record = array();
 $op_record = array();
-$opa_record = array();
+$oc_record = array();
 $notes_record = array();
 
 foreach ($a2j_file->Answer as $val) 
@@ -129,9 +129,9 @@ foreach ($a2j_file->Answer as $val)
 		$op_record[$x[1]] = $usv;
 	}
 	
-	else if ($x[0] == 'opa')
+	else if ($x[0] == 'oc')
 	{
-		$opa_record[$x[1]] = $usv;
+		$oc_record[$x[1]] = $usv;
 	}
 
 	else if ($x[0] == 'notes')
@@ -147,9 +147,9 @@ if (sizeof($op_record) > 0)
 	$bundle['op'] = $op_record;
 }
 
-if (sizeof($opa_record) > 0)
+if (sizeof($oc_record) > 0)
 {
-	$bundle['opa'] = $opa_record;
+	$bundle['oc'] = $oc_record;
 }
 
 if (sizeof($notes_record) > 0)

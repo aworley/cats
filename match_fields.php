@@ -79,7 +79,7 @@ class match_fields
 		to the data matching menus.</p>
 		<p class=\"help-block\">To enter a new field option, first the name of the 
 		field in the text box.  Then select the table	record where the field appears
-		(Case, Client, Opposing Party, or Opposing Party's Attorney).  Then press 
+		(Case, Client, Opposing Party, or Opposing Counsel).  Then press 
 		the Add Field button. 
 		Your additions will appear at the very bottom of the menus.
 		You can add as many new options as needed.</p>
@@ -97,7 +97,7 @@ class match_fields
 		  <input type=\"radio\" name=\"table\" id=\"table2\" value=\"op\"> Opposing Party
 		</label>
 		<label class=\"radio-inline\">
-		  <input type=\"radio\" name=\"table\" id=\"table3\" value=\"opa\"> Opposing Party's Attorney
+		  <input type=\"radio\" name=\"table\" id=\"table3\" value=\"oc\"> Opposing Counsel
 		</label>		
 			</div>
 			<button id=\"add\" class=\"btn btn-default\">Add Field</button>
@@ -151,8 +151,8 @@ echo "</optgroup>\n";
 echo "<<optgroup label=\"Opposing Party\">\n";
 echo build_match_options('op', $contact_columns, $selected);
 echo "</optgroup>\n";
-echo "<optgroup label=\"Opposing Party Attorney\">\n";
-echo build_match_options('opa', $contact_columns, $selected);
+echo "<optgroup label=\"Opposing Counsel\">\n";
+echo build_match_options('oc', $contact_columns, $selected);
 echo "</optgroup>\n";
 echo "<optgroup label=\"Custom Fields Added in Step 3\">\n";
 echo "</optgroup>\n";
