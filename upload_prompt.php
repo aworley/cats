@@ -15,8 +15,10 @@ class upload_prompt
 	<h2>Step 2:  Upload the Interview ZIP File</h2>
   <div class="form-group">
 	<p>Please upload the ZIP file for the interview that you want to publish.</p>
-	<input type="file" name="uploads[]" data-multiple-caption="{count} files selected" multiple><br>
+	<input type="file" name="zip"><br>
 	<p class="help-block">This should be the ZIP file you downloaded from the A2J Author site.</p>
+	<p>Optionally, upload the last .PHP file you created.  CATS will load your previous settings from this file.</p>
+	<input type="file" name="previous_matches"><br>
 	</div>
 	<input type="submit" class="btn btn-default btn-lg" value="Click Here to Upload and Continue to Step 3">
 	</form>

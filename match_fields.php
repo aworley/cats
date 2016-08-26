@@ -45,49 +45,30 @@ class match_fields
 		$note_columns = array('notes0', 'notes1', 'notes2', 'notes3', 'notes4', 'notes5', 'notes6', 'notes7', 'notes8', 'notes9');
 		$lookup = array();
 		
-		if (!isset($_FILES['uploads']))
+		if (!isset($_FILES['zip']))
 		{
 			// The user bypassed the previous form.
 			die('Steps 1 and 2 were skipped.');
 		}
 		
-		if ($_FILES['uploads']['name'][0] == '')
-		{
-			// The user did not upload any files.
-			die('No files were uploaded.');
-		}
-		
-		if (sizeof($_FILES['uploads']['name']) > 2)
-		{
-			die('Too many files were uploaded.');
-		}
-		
-		for ($i = 0; $i < sizeof($_FILES['uploads']['name']); $i++)
-		{
-			if ($_FILES['uploads']['type'][$i] == 'application/zip')
-			{
-				$zip_path = $_FILES['uploads']['tmp_name'][$i];
-			}
-			
-			else
-			{
-				// This file is hopefully a previously build .php file.  Extract the
-				// JSON lookup table from it, and use that to prepopulate the matching
-				// table to save the user time.
-				$s = file_get_contents($_FILES['uploads']['tmp_name'][$i]);
-				$t = explode("\n", $s);
-				$lookup = json_decode($t[4], 1);
-			}
-		}
-		
 		//TODO:  Check ['zip']['type'], ['error']
 		$zip = new ZipArchive();
 		
-		$zip->open($zip_path);
+		$zip->open($_FILES['zip']['tmp_name']);
 		$xml = $zip->getFromName('Guide.xml');
 		$a2j_file = new SimpleXMLElement($xml);
 		//echo "<pre>=== A2J Answer File export ===\n";
 		//print_r($a2j_file);
+		
+		if (strlen($_FILES['previous_matches']['name']) > 0)
+		{
+			// This file is hopefully a previously build .php file.  Extract the
+			// JSON lookup table from it, and use that to prepopulate the matching
+			// table to save the user time.
+			$s = file_get_contents($_FILES['previous_matches']['tmp_name']);
+			$t = explode("\n", $s);
+			$lookup = json_decode($t[4], 1);
+		}
 		
 		$safe_url = htmlentities($_POST['url']);
 		echo "
