@@ -74,7 +74,9 @@ foreach ($a2j_file->Answer as $val)
 	
 	else if (isset($val->DateValue))
 	{
-		$usv = (string) $val->DateValue;
+		$x = (string) $val->DateValue;
+		$y = explode('/', $x);
+		$usv = $y[1] . '/' . $y[0] . '/' . $y[2];
 	}
 	
 	else if (isset($val->MCValue->SelValue))
