@@ -39,7 +39,6 @@ function pika_cms_transfer_v2_submit($data, $url, $username, $password)
 	$result=curl_exec($c);
 	$status_code = curl_getinfo($c, CURLINFO_HTTP_CODE);
 	curl_close ($c);
-	echo $status_code;
 	//if ( $status_code != 201 ) 
 	if (false && $result != '1')
 	{
