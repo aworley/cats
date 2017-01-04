@@ -12,6 +12,9 @@ class build_php
 		echo "<?php\n";
 		echo "\$username = '';\n";
 		echo "\$password = '';\n";
+		echo "/* These two variables are displayed on the landing page the clients see after submitting their request. */\n";
+		echo "\$program_name = '';\n";
+		echo "\$contact_email = '';\n";
 		echo "/* This JSON data is used to restore this mapping for fine tuning.\n";
 		echo json_encode($lookup);
 		echo "\n*/\n";

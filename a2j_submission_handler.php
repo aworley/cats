@@ -164,11 +164,76 @@ $case_id = pika_cms_transfer_v2_submit($bundle, $url, $username, $password);
 if (false)
 {
 	echo "<h1>I'm sorry, but a system error has occurred.</h1>";
+	exit();
 }
 
-else
+if (!isset($program_name))
 {
-	echo "<h1>Your request has been recorded.  Your request tracking number is {$case_id}.</h1>";
+	$program_name = 'Legal Services';
 }
+
+if (!isset($contact_email))
+{
+	$contact_email = 'we_forgot_to_set_the_contact_email_address@bestlegalaid.org';
+}
+
+/*	The HTML is enclosed in a Heredoc variable so that everything the program needs
+	is encapsulated in a single file, making install easier.
+*/
+echo <<<EOT
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Thank you.  Your request has been successfully submitted.</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <style>
+	body {
+	font-family: sans-serif;
+	background: white;
+	/*
+	background: linear-gradient(to bottom, #ffffff 0%, #ffffff 25%, #c6c6c6 100%);
+	background-repeat:   no-repeat;
+	background-position: 0px 0px;
+	*/
+	}
+	.masthead {
+  display:block;
+  margin-left:auto;
+  margin-right:auto;
+  	}
+	h1 {
+    text-align: center;
+    font-size: 1.1em;
+    }
+	.main {
+	background: #b8cade;
+    width: 30%;
+    margin: 0 auto;
+    padding: 2em;
+    margin-top: 3em;
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(50, 50, 50, 0.75);
+	-moz-box-shadow:    0px 0px 15px 0px rgba(50, 50, 50, 0.75);
+	box-shadow:         0px 0px 15px 0px rgba(50, 50, 50, 0.75);
+	}
+  </style>
+	  
+
+</head>
+
+<body>
+	<img src="program-logo.jpg" class="masthead">
+	<h1>{$program_name}</h1>
+	<div class="main">
+	<p>Your request has been successfully submitted.</p>
+	<p>Your request tracking number is <strong>{$case_id}</strong>.</p>
+	<p>If you do not hear from {$program_name} by email or telephone within 3 business days, please contact us at <a href="mailto:{$contact_email}">{$contact_email}</a>.  Be sure the include the tracking number above in your email message.</p>
+</body>
+</html>
+EOT;
+exit();
 
 ?>
