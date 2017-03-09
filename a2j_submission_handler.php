@@ -48,6 +48,134 @@ function pika_cms_transfer_v2_submit($data, $url, $username, $password)
 	return $result;
 }
 
+function pika_cms_transfer_lsxml_submit($data, $url, $username, $password)
+{
+	$lsxml_template = <<<EOF
+<ClientIntake>
+	<CaseInformation>
+		<Custom>
+		</Custom>
+	</CaseInformation>
+	<Notes>
+	</Notes>
+	<Contacts>
+		<Contact>
+			<Role>Client</Role>
+			<Custom>
+			</Custom>
+		</Contact>
+		<Contact>
+			<Role>Opposing Party</Role>
+			<Custom>
+			</Custom>
+		</Contact>
+		<Contact>
+			<Role>Opposing Counsel</Role>
+			<Custom>
+			</Custom>
+		</Contact>
+	</Contacts>
+</ClientIntake>
+EOF;
+
+	$l = new SimpleXMLElement($lsxml_template);
+	$case_lookup = array(
+	'problem' => 'LSCProblemCode',
+	'sp_problem' =>  'LSCSubProblemCode',
+	'created' => 'IntakeDate',
+	'open_date' => 'OpenDate',
+	'intake_type' => 'IntakeMethod',
+	'funding' => 'Funding',
+	'close_date' => 'CloseDate',
+	'close_code' => 'LSCClosingCode',
+	'outcome' => 'Outcome');
+	$contact_lookup = array(
+	'first_name' => 'First_Name',
+	'last_name' => 'Last_Name');
+
+	foreach ($data['case'] as $key => $val)
+	{
+		if (array_key_exists($key, $case_lookup))
+		{
+			$l->CaseInformation->addChild($case_lookup[$key], $val);
+		}
+		
+		else
+		{
+			$l->CaseInformation->Custom->addChild($key, $val);
+		}
+	}
+
+
+	foreach ($data['client'] as $key => $val)
+	{
+		if (array_key_exists($key, $contact_lookup))
+		{
+			$l->Contacts->Contact[0]->addChild($contact_lookup[$key], $val);
+		}
+		
+		else
+		{
+			$l->Contacts->Contact[0]->Custom->addChild($key, $val);
+		}
+	}
+
+	foreach ($data['op'] as $key => $val)
+	{
+		if (array_key_exists($key, $contact_lookup))
+		{
+			$l->Contacts->Contact[1]->addChild($contact_lookup[$key], $val);
+		}
+		
+		else
+		{
+			$l->Contacts->Contact[1]->Custom->addChild($key, $val);
+		}
+	}
+
+	foreach ($data['oc'] as $key => $val)
+	{
+		if (array_key_exists($key, $contact_lookup))
+		{
+			$l->Contacts->Contact[2]->addChild($contact_lookup[$key], $val);
+		}
+		
+		else
+		{
+			$l->Contacts->Contact[2]->Custom->addChild($key, $val);
+		}
+	}
+
+	foreach ($data['notes'] as $key => $val)
+	{
+		$note_node = $l->Notes->addChild('Note');
+		$note_node->addChild('NoteSummary', 'Notes from Online Intake');
+		$note_node->addChild('NoteText', $val);
+		$note_node->addChild('NoteDate', date('Y-m-d'));
+	}
+	
+	$c = curl_init();
+	curl_setopt($c, CURLOPT_URL, $url);
+	curl_setopt($c, CURLOPT_TIMEOUT, 60);
+	curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($c, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
+	curl_setopt($c, CURLOPT_USERPWD, "$username:$password");
+	curl_setopt($c, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($c, CURLOPT_SSL_VERIFYHOST, 2);	
+	$post_data = array('lsxml' => $l->asXML());
+	curl_setopt($c,CURLOPT_POST, true);
+	curl_setopt($c,CURLOPT_POSTFIELDS, $post_data);	
+	$result=curl_exec($c);
+	$status_code = curl_getinfo($c, CURLINFO_HTTP_CODE);
+	curl_close ($c);
+	//if ( $status_code != 201 ) 
+	if (false && $result != '1')
+	{
+    	die("An error occurred. URL: $url, status: $status_code, curl_error " . curl_error($c) . ", curl_errno " . curl_errno($c));
+	}
+
+	return substr($result, 0, strpos($result, ' '));
+}
 
 $a2j_file = new SimpleXMLElement($_POST['AnswerKey']);
 //print_r($a2j_file);
@@ -158,7 +286,21 @@ if (sizeof($notes_record) > 0)
 	$bundle['notes'] = $notes_record;
 }
 
-$case_id = pika_cms_transfer_v2_submit($bundle, $url, $username, $password);
+if (substr($url, -20) == 'transfer_case_v2.php')
+{
+	$case_id = pika_cms_transfer_v2_submit($bundle, $url, $username, $password);
+}
+
+else if (substr($url, -23) == 'transfer_case_lsxml.php')
+{
+	$case_id = pika_cms_transfer_lsxml_submit($bundle, $url, $username, $password);
+}
+
+else 
+{
+	trigger_error('Data format in URL not valid.');
+	exit();
+}
 
 if (false)
 {
