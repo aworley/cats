@@ -177,13 +177,33 @@ EOF;
 	return substr($result, 0, strpos($result, ' '));
 }
 
-$a2j_file = new SimpleXMLElement($_POST['AnswerKey']);
+
+libxml_use_internal_errors(true);
+
+//$a2j_file = new SimpleXMLElement($_POST['AnswerKey']);
+$a2j_file = simplexml_load_string($_POST['AnswerKey']);
+
 //print_r($a2j_file);
 $case_record = array();
 $contact_record = array();
 $op_record = array();
 $oc_record = array();
 $notes_record = array();
+
+if (sizeof(libxml_get_errors()) > 0)
+{
+        $contact_record['last_name'] = 'A2J error';
+        $notes_record[] = $_POST['AnswerKey'];
+        $notes_record[] = print_r(libxml_get_errors(), true);
+        /*
+	echo '<h1>errors</h1>';
+        print_r(libxml_get_errors());
+        exit();
+        */
+}
+
+else
+{
 
 foreach ($a2j_file->Answer as $val) 
 {			
@@ -267,6 +287,8 @@ foreach ($a2j_file->Answer as $val)
 	{
 		$notes_record[$x[1]] = $usv;
 	}
+}
+
 }
 
 $bundle = array('case' => $case_record, 'client' => $contact_record);
