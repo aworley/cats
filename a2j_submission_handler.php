@@ -177,13 +177,8 @@ EOF;
 	return substr($result, 0, strpos($result, ' '));
 }
 
-
 libxml_use_internal_errors(true);
-
-//$a2j_file = new SimpleXMLElement($_POST['AnswerKey']);
 $a2j_file = simplexml_load_string($_POST['AnswerKey']);
-
-//print_r($a2j_file);
 $case_record = array();
 $contact_record = array();
 $op_record = array();
@@ -195,100 +190,93 @@ if (sizeof(libxml_get_errors()) > 0)
         $contact_record['last_name'] = 'A2J error';
         $notes_record[] = $_POST['AnswerKey'];
         $notes_record[] = print_r(libxml_get_errors(), true);
-        /*
-	echo '<h1>errors</h1>';
-        print_r(libxml_get_errors());
-        exit();
-        */
 }
 
 else
 {
-
-foreach ($a2j_file->Answer as $val) 
-{			
-	//print_r($val);
-	$a = $val->attributes();
-	$a2j_field_name = str_replace(' ', '_', $a['name']);
-	
-	$usv = null;
-	$cms_field_name = null;
-	
-	if (isset($val->TextValue))
-	{
-		$usv = (string) $val->TextValue;
-	}
-	
-	else if (isset($val->DateValue))
-	{
-		$x = (string) $val->DateValue;
-		$y = explode('/', $x);
-		$usv = $y[1] . '/' . $y[0] . '/' . $y[2];
-	}
-	
-	else if (isset($val->MCValue->SelValue))
-	{
-		$usv = (string) $val->MCValue->SelValue;
-	}
-	
-	else if (isset($val->NumValue))
-	{
-		$usv = (string) $val->NumValue;
-	}
-	
-	else if (isset($val->TFValue))
-	{
-		if ($val->TFValue == 'true')
+	foreach ($a2j_file->Answer as $val) 
+	{			
+		//print_r($val);
+		$a = $val->attributes();
+		$a2j_field_name = str_replace(' ', '_', $a['name']);
+		
+		$usv = null;
+		$cms_field_name = null;
+		
+		if (isset($val->TextValue))
 		{
-			$usv = '1';
+			$usv = (string) $val->TextValue;
 		}
 		
-		else
+		else if (isset($val->DateValue))
 		{
-			$usv = '0';
+			$x = (string) $val->DateValue;
+			$y = explode('/', $x);
+			$usv = $y[1] . '/' . $y[0] . '/' . $y[2];
+		}
+		
+		else if (isset($val->MCValue->SelValue))
+		{
+			$usv = (string) $val->MCValue->SelValue;
+		}
+		
+		else if (isset($val->NumValue))
+		{
+			$usv = (string) $val->NumValue;
+		}
+		
+		else if (isset($val->TFValue))
+		{
+			if ($val->TFValue == 'true')
+			{
+				$usv = '1';
+			}
+			
+			else
+			{
+				$usv = '0';
+			}
+		}
+		
+		else if (isset($val->Text))
+		{
+			$usv = (string) $val->Text;
+		}
+			
+		if (array_key_exists($a2j_field_name, $lookup))
+		{
+			$cms_field_name = $lookup[$a2j_field_name];
+		}
+		
+		//echo "$a2j_field_name : $cms_field_name = $usv\n";
+		
+		
+		$x = explode('.', $cms_field_name);
+		if ($x[0] == 'cases')
+		{
+			$case_record[$x[1]] = $usv;
+		}
+		
+		else if ($x[0] == 'contacts')
+		{
+			$contact_record[$x[1]] = $usv;
+		}
+		
+		else if ($x[0] == 'op')
+		{
+			$op_record[$x[1]] = $usv;
+		}
+		
+		else if ($x[0] == 'oc')
+		{
+			$oc_record[$x[1]] = $usv;
+		}
+
+		else if ($x[0] == 'notes')
+		{
+			$notes_record[$x[1]] = $usv;
 		}
 	}
-	
-	else if (isset($val->Text))
-	{
-		$usv = (string) $val->Text;
-	}
-		
-	if (array_key_exists($a2j_field_name, $lookup))
-	{
-		$cms_field_name = $lookup[$a2j_field_name];
-	}
-	
-	//echo "$a2j_field_name : $cms_field_name = $usv\n";
-	
-	
-	$x = explode('.', $cms_field_name);
-	if ($x[0] == 'cases')
-	{
-		$case_record[$x[1]] = $usv;
-	}
-	
-	else if ($x[0] == 'contacts')
-	{
-		$contact_record[$x[1]] = $usv;
-	}
-	
-	else if ($x[0] == 'op')
-	{
-		$op_record[$x[1]] = $usv;
-	}
-	
-	else if ($x[0] == 'oc')
-	{
-		$oc_record[$x[1]] = $usv;
-	}
-
-	else if ($x[0] == 'notes')
-	{
-		$notes_record[$x[1]] = $usv;
-	}
-}
-
 }
 
 $bundle = array('case' => $case_record, 'client' => $contact_record);
