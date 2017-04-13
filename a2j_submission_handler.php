@@ -177,6 +177,23 @@ EOF;
 	return substr($result, 0, strpos($result, ' '));
 }
 
+$log_enabled = false;
+
+if (isset($log_dir) && is_writeable($log_dir) && !isset($_REQUEST['log_dir']))
+{
+	$log_enabled = true;
+	
+	/*	While the script is running, the log file is stored with "incomplete"
+			until the script is ready exits successfully.  This makes it easy to find 
+			log files for attempts that failed.
+	*/
+	$rand_id = date('Y-m-d-H-m-s-') . rand(0, 100);
+	$log_path_incomplete = $log_dir . "/a2j-incomplete-{$rand_id}.txt";
+	$log_path_final = $log_dir . "/a2j-{$rand_id}.txt";
+		
+	file_put_contents($log_path_incomplete, $_POST['AnswerKey']);
+}
+
 //libxml_use_internal_errors(true);
 //$a2j_file = simplexml_load_string($_POST['AnswerKey']);
 $a2j_file = new SimpleXMLElement($_POST['AnswerKey']);
@@ -392,6 +409,12 @@ echo <<<EOT
 </body>
 </html>
 EOT;
+
+if ($log_enabled)
+{
+	rename($log_path_incomplete, $log_path_final);
+}
+
 exit();
 
 ?>

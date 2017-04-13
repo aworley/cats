@@ -19,7 +19,8 @@ class build_php
 		echo json_encode($lookup);
 		echo "\n*/\n";
 		echo "\$lookup = " . var_export($lookup, true) . ";\n";
-		echo "\$url = '" . $_POST['url'] . '/services/transfer_case_v2.php' . "';\n";		
+		echo "\$url = '" . $_POST['url'] . '/services/transfer_case_v2.php' . "';\n";
+		echo "\$//log_dir = '';\n";
 		echo "?>";
 		echo file_get_contents('a2j_submission_handler.php');
 		exit();
