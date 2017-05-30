@@ -67,7 +67,7 @@ class match_fields
 			// table to save the user time.
 			$s = file_get_contents($_FILES['previous_matches']['tmp_name']);
 			$t = explode("\n", $s);
-			$lookup = json_decode($t[4], 1);
+			$lookup = json_decode($t[7], 1);
 		}
 		
 		$safe_url = htmlentities($_POST['url']);
